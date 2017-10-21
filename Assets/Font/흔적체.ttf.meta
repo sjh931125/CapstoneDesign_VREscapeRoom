@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: b6b84e406facffe46b03fffd7a25f5e0
+timeCreated: 1508483875
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: YDIFadeL
+  fontNames:
+  - YDIFadeL
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2017
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Creepy Classroom", "Creepy Classroom.csproj", "{E7419B03-0C19-B44A-FF34-229B04A998D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Creepy Classroom.Editor", "Creepy Classroom.Editor.csproj", "{D49A20C4-26F5-37FF-0F56-ED91D93404D7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E7419B03-0C19-B44A-FF34-229B04A998D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7419B03-0C19-B44A-FF34-229B04A998D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7419B03-0C19-B44A-FF34-229B04A998D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7419B03-0C19-B44A-FF34-229B04A998D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D49A20C4-26F5-37FF-0F56-ED91D93404D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D49A20C4-26F5-37FF-0F56-ED91D93404D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D49A20C4-26F5-37FF-0F56-ED91D93404D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D49A20C4-26F5-37FF-0F56-ED91D93404D7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
