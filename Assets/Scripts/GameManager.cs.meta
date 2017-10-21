@@ -1,10 +1,13 @@
 fileFormatVersion: 2
 guid: c6a118326da6a7d4eb6185d149a1cd82
-timeCreated: 1506513185
+timeCreated: 1508591989
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - charactor: {instanceID: 0}
+  - audioSourceCam: {instanceID: 0}
+  - audioSourcePhone: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

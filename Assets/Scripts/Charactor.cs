@@ -15,12 +15,24 @@ public class Charactor : MonoBehaviour {
     float moveHorizontal;
     float moveVertical;
     float moveMouse;
+    float testMoveMouseY;//테스트용 변수
 
     //이동속도를 나타낼 변수
-    public float moveSpeed=1.0f;
+    public float moveSpeed;
+    //현재 누르고 있는 방향키의 갯수
+    private int numOfPressedKey;
+
+    //AudioClip
+    public AudioClip audioClipPickItem;
+    public AudioClip audioClipThrowItem;
+
+    //테스트용 오브젝트
+    public GameObject testHead;
+
     // Use this for initialization
     void Start () {
-        
+        moveSpeed = 1.0f;
+        numOfPressedKey = 0;
 	}
 	
 	// Update is called once per frame
@@ -41,6 +53,8 @@ public class Charactor : MonoBehaviour {
         moveHorizontal = Input.GetAxis("Horizontal");
         moveVertical = Input.GetAxis("Vertical");
         moveMouse = Input.GetAxis("Mouse X");
+        testMoveMouseY = Input.GetAxis("Mouse Y");//테스트용 변수
+        
 
         //캐릭터의 이동
         Vector3 moveDirection = (Vector3.forward * moveVertical) + (Vector3.right * moveHorizontal);
@@ -48,6 +62,9 @@ public class Charactor : MonoBehaviour {
 
         //캐릭터의 회전
         this.transform.Rotate(Vector3.up * GameManager.instance.getMouseSensitivity() * Time.deltaTime * moveMouse);
+        
+        //테스트용 코드
+        testHead.transform.Rotate(Vector3.left*GameManager.instance.getMouseSensitivity()*Time.deltaTime*testMoveMouseY);
     }
 
     //마우스가 눌렸을 때 실행될 메소드
@@ -76,6 +93,8 @@ public class Charactor : MonoBehaviour {
                         charLight.GetComponent<Light>().enabled = true;
                         Destroy(item);
                         GameManager.instance.setProgress(1);
+                        //물건 집을 때의 소리 재생
+                        GameManager.instance.playSfx(item.transform.position, audioClipPickItem);
                     }
                     //태그가 Item이고 물건을 가지고 있지 않을때, 물건을 집는다
                     if (item.tag.Equals("Item") && (charHand.transform.childCount == 0))
@@ -93,6 +112,9 @@ public class Charactor : MonoBehaviour {
                         itemImg.GetComponent<Image>().sprite = Resources.Load<Sprite>("Items/" + item.name);
                         Debug.Log(item.name);
                         itemImg.GetComponent<Image>().enabled = true;
+
+                        //물건 집을 때의 소리 재생
+                        GameManager.instance.playSfx(item.transform.position,audioClipPickItem);
 
                     }
                     //태그가 ElecDoor일 경우
@@ -188,6 +210,9 @@ public class Charactor : MonoBehaviour {
 
                 //띄우고 있던 이미지 숨기기
                 itemImg.GetComponent<Image>().enabled = false;
+
+                //물건 버릴 때의 소리 재생
+                GameManager.instance.playSfx(charHand.transform.position, audioClipThrowItem);
             }
         }
     }
@@ -210,11 +235,51 @@ public class Charactor : MonoBehaviour {
     //키보드가 눌렸을 때 실행될 메소드
     public void keyboardPushed()
     {
+        //W,S,A,D를 눌렀을 때, 누르고있는 방향키의 갯수 증가
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            numOfPressedKey++;
+        }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            numOfPressedKey++;
+        }
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            numOfPressedKey++;
+        }
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            numOfPressedKey++;
+        }
+        //W,S,A,D를 뗐을 때, 누르고있는 방향키의 갯수 감소
+        if (Input.GetKeyUp(KeyCode.W))
+        {
+            numOfPressedKey--;
+        }
+        if (Input.GetKeyUp(KeyCode.S))
+        {
+            numOfPressedKey--;
+        }
+        if (Input.GetKeyUp(KeyCode.A))
+        {
+            numOfPressedKey--;
+        }
+        if (Input.GetKeyUp(KeyCode.D))
+        {
+            numOfPressedKey--;
+        }
         //ESC가 눌렸을 때, 메뉴 띄우기
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             GameManager.instance.setCharactorStatus(2);
             GameManager.instance.GetComponent<Settings>().initialization();
         }
+    }
+
+    public void controlWalkingSound()
+    {
+        if (numOfPressedKey == 0) this.GetComponent<AudioSource>().mute = true;
+        else this.GetComponent<AudioSource>().mute = false;
     }
 }

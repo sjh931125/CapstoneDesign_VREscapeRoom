@@ -66,18 +66,19 @@ public class GameManager : MonoBehaviour {
         {
             this.mouseSensitivity = PlayerPrefs.GetFloat("mouseSensitivity");
         }
-
+        //Application.LoadLevelAdditive("ClassRoom");
+        audioSourcePhone = GameObject.FindGameObjectWithTag("Smartphone");
         setVolumes();
-        Application.LoadLevelAdditive("ClassRoom");
-	}
-	
-	// Update is called once per frame
-	void FixedUpdate () {
+    }
+
+    // Update is called once per frame
+    private void Update()
+    {
         if (charactorStatus == 0)
         {
-            charactor.GetComponent<Charactor>().charMove();
             charactor.GetComponent<Charactor>().mouseClicked();
             charactor.GetComponent<Charactor>().keyboardPushed();
+            charactor.GetComponent<Charactor>().controlWalkingSound();
         }
         else if (charactorStatus == 1)
         {
@@ -88,6 +89,12 @@ public class GameManager : MonoBehaviour {
         {
             this.GetComponent<Settings>().mouseClicked();
             this.GetComponent<Settings>().keyboardPushed();
+        }
+    }
+    void FixedUpdate () {
+        if (charactorStatus == 0)
+        {
+            charactor.GetComponent<Charactor>().charMove();
         }
 	}
 
