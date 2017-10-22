@@ -19,8 +19,6 @@ public class Charactor : MonoBehaviour {
 
     //이동속도를 나타낼 변수
     public float moveSpeed;
-    //현재 누르고 있는 방향키의 갯수
-    private int numOfPressedKey;
 
     //AudioClip
     public AudioClip audioClipPickItem;
@@ -32,7 +30,6 @@ public class Charactor : MonoBehaviour {
     // Use this for initialization
     void Start () {
         moveSpeed = 1.0f;
-        numOfPressedKey = 0;
 	}
 	
 	// Update is called once per frame
@@ -235,40 +232,6 @@ public class Charactor : MonoBehaviour {
     //키보드가 눌렸을 때 실행될 메소드
     public void keyboardPushed()
     {
-        //W,S,A,D를 눌렀을 때, 누르고있는 방향키의 갯수 증가
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            numOfPressedKey++;
-        }
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            numOfPressedKey++;
-        }
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            numOfPressedKey++;
-        }
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            numOfPressedKey++;
-        }
-        //W,S,A,D를 뗐을 때, 누르고있는 방향키의 갯수 감소
-        if (Input.GetKeyUp(KeyCode.W))
-        {
-            numOfPressedKey--;
-        }
-        if (Input.GetKeyUp(KeyCode.S))
-        {
-            numOfPressedKey--;
-        }
-        if (Input.GetKeyUp(KeyCode.A))
-        {
-            numOfPressedKey--;
-        }
-        if (Input.GetKeyUp(KeyCode.D))
-        {
-            numOfPressedKey--;
-        }
         //ESC가 눌렸을 때, 메뉴 띄우기
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -279,7 +242,13 @@ public class Charactor : MonoBehaviour {
 
     public void controlWalkingSound()
     {
-        if (numOfPressedKey == 0) this.GetComponent<AudioSource>().mute = true;
-        else this.GetComponent<AudioSource>().mute = false;
+        if(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+        {
+            this.GetComponent<AudioSource>().mute = false;
+        }
+        else
+        {
+            this.GetComponent<AudioSource>().mute = true;
+        }
     }
 }
