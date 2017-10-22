@@ -23,6 +23,9 @@ public class Charactor : MonoBehaviour {
     //AudioClip
     public AudioClip audioClipPickItem;
     public AudioClip audioClipThrowItem;
+    public AudioClip audioClipLockedCabinet;
+    public AudioClip audioClipFuse;
+    public AudioClip audioClipTurnOnProjector;
 
     //테스트용 오브젝트
     public GameObject testHead;
@@ -82,6 +85,21 @@ public class Charactor : MonoBehaviour {
                 //레이캐스트에 부딪힌 물체와 캐릭터간의 거리를 구하여 변수에 저장
                 float dist = Vector3.Distance(this.transform.position, hit.transform.position);
 
+                //물건을 들고있을 때 들고있는 물건이 RC인 경우
+                if (item.tag.Equals("Projector") && charHand.transform.childCount != 0)
+                {
+                    //charHand의 자식 오브젝트를 불러옴
+                    GameObject child_item = charHand.GetComponentInChildren<Rigidbody>().gameObject;
+                    if (child_item.name.Equals("RC"))
+                    {
+                        GameObject.FindGameObjectWithTag("Screen").GetComponent<MeshRenderer>().material = GameManager.instance.materialScreen;
+                        Destroy(child_item);
+                        //띄우고 있던 이미지 숨기기
+                        itemImg.GetComponent<Image>().enabled = false;
+                        GameManager.instance.playSfx(GameObject.FindGameObjectWithTag("Projector").transform.position, audioClipTurnOnProjector);
+                    }
+                }
+
                 if (dist <= 1.5f)
                 {
                     //태그가 Smartphone일 경우 charLight를 활성화시킴
@@ -89,7 +107,6 @@ public class Charactor : MonoBehaviour {
                     {
                         charLight.GetComponent<Light>().enabled = true;
                         Destroy(item);
-                        GameManager.instance.setProgress(1);
                         //물건 집을 때의 소리 재생
                         GameManager.instance.playSfx(item.transform.position, audioClipPickItem);
                     }
@@ -107,77 +124,94 @@ public class Charactor : MonoBehaviour {
 
                         //집은 물건의 이미지를 띄우기
                         itemImg.GetComponent<Image>().sprite = Resources.Load<Sprite>("Items/" + item.name);
-                        Debug.Log(item.name);
                         itemImg.GetComponent<Image>().enabled = true;
 
                         //물건 집을 때의 소리 재생
                         GameManager.instance.playSfx(item.transform.position,audioClipPickItem);
 
                     }
+                    //태그가 Door일 경우
+                    if (item.tag.Equals("Door"))
+                    {
+                        item.GetComponent<ClassForAnimation>().playAnimation();
+                    }
                     //태그가 ElecDoor일 경우
                     if (item.tag.Equals("ElecDoor"))
                     {
-                        //progress가 1이고 현재 물건을 들고있을 경우
-                        if (GameManager.instance.getProgress() == 1 && charHand.transform.childCount != 0)
+                        //현재 물건을 들고있을 경우
+                        if (charHand.transform.childCount != 0)
                         {
                             //charHand의 자식 오브젝트를 불러옴
                             GameObject child_item = charHand.GetComponentInChildren<Rigidbody>().gameObject;
+                            Debug.Log(child_item.name);
                             //들고있는 아이템이 ElecKey일 경우
                             if (child_item.name.Equals("ElecKey"))
                             {
-                                //배전반 문여는 소스코드
+                                item.GetComponent<ClassForAnimation>().playAnimation();
+                                item.tag = "Door";
 
                                 //들고있는 아이템 제거
                                 Destroy(child_item);
                                 //띄우고 있던 이미지 숨기기
                                 itemImg.GetComponent<Image>().enabled = false;
                             }
+                            else
+                            {
+                                GameManager.instance.playSfx(item.transform.position, audioClipLockedCabinet);
+                            }
+                        }
+                        else
+                        {
+                            GameManager.instance.playSfx(item.transform.position, audioClipLockedCabinet);
                         }
                     }
                     //태그가 FuseHome일 경우
                     if (item.tag.Equals("FuseHome"))
                     {
-                        //progres가 2이고 현재 물건을 들고있을 경우
-                        if (GameManager.instance.getProgress() == 2 && charHand.transform.childCount != 0)
+                        //현재 물건을 들고있을 경우
+                        if (charHand.transform.childCount != 0)
                         {
                             //charHand의 자식 오브젝트를 불러옴
                             GameObject child_item = charHand.GetComponentInChildren<Rigidbody>().gameObject;
+                            int fuseColor=0;
                             //들고있는 아이템이 Red, Green, Blue일 경우
                             if (child_item.name.Equals("Red") || child_item.name.Equals("Green") || child_item.name.Equals("Blue"))
                             {
+                                if (child_item.name.Equals("Red")) fuseColor = 1;
+                                else if (child_item.name.Equals("Green")) fuseColor = 2;
+                                else if (child_item.name.Equals("Blue")) fuseColor = 3;
                                 //child_item을 item의 자식 오브젝트로 만든다
                                 child_item.transform.SetParent(item.transform);
                                 //속성값과 위치, 회전값들을 변경
                                 setPhyComponents(child_item, false);
-                                child_item.GetComponent<Rigidbody>().isKinematic = false;
+                                child_item.GetComponent<Rigidbody>().isKinematic = true;
                                 child_item.transform.localPosition = Vector3.zero;
                                 child_item.transform.rotation = new Quaternion(0, 0, 0, 0);
                                 //띄우고 있던 이미지 숨기기
                                 itemImg.GetComponent<Image>().enabled = false;
+                                //효과음
+                                GameManager.instance.playSfx(item.transform.position,audioClipFuse);
+
+                                if (item.name.Equals("fuse1h")) GameManager.instance.setInsertFuse(0, fuseColor);
+                                if (item.name.Equals("fuse2h")) GameManager.instance.setInsertFuse(1, fuseColor);
+                                if (item.name.Equals("fuse3h")) GameManager.instance.setInsertFuse(2, fuseColor);
+                                GameManager.instance.checkFuse();
                             }
                         }
                     }
                     //태그가 CabDoor일 경우
                     if (item.tag.Equals("CabDoor"))
                     {
-                        //progress가 3이고 오브젝트 이름이 Cabinet1인 경우
-                        if (GameManager.instance.getProgress() == 0 && item.name.Equals("Cabinet1"))
-                        {
-                            GameManager.instance.setCharactorStatus(1);
-                            GameManager.instance.GetComponent<Lock>().displayOnOff(true);
-                        }
-                        //progres가 5이고 오브젝트 이름이 Cabinet2인 경우
-                        if (GameManager.instance.getProgress() == 5 && item.name.Equals("Cabinet2"))
-                        {
-                            GameManager.instance.setCharactorStatus(1);
-                            GameManager.instance.GetComponent<Lock>().displayOnOff(true);
-                        }
+                        GameManager.instance.GetComponent<Lock>().setSelectedCabinet(item);
+                        GameManager.instance.setCharactorStatus(1);
+                        GameManager.instance.GetComponent<Lock>().displayOnOff(true);
+                        GameManager.instance.playSfx(item.transform.position, audioClipLockedCabinet);
                     }
                     //태그가 LastDoor일 경우
                     if (item.tag.Equals("LastDoor"))
                     {
-                        //progress가 6이고 현재 물건을 들고있을 경우
-                        if (GameManager.instance.getProgress() == 6 && charHand.transform.childCount != 0)
+                        //현재 물건을 들고있을 경우
+                        if (charHand.transform.childCount != 0)
                         {
                             //charHand의 자식 오브젝트를 불러옴
                             GameObject child_item = charHand.GetComponentInChildren<Rigidbody>().gameObject;

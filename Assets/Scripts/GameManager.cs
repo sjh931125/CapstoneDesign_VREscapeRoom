@@ -12,23 +12,21 @@ public class GameManager : MonoBehaviour {
     //1 : 자물쇠 열기
     //2 : 환경설정
     private int charactorStatus;
-    //게임 진행정도를 저장
-    //0 : 처음 상태
-    //1 : 스마트폰을 획득한 상태
-    //2 : 배전반을 연 상태
-    //3 : 배전반에 퓨즈를 끼운 상태
-    //4 : 첫번째 캐비넷이 열린 상태
-    //5 : 프로젝터를 켠 상태
-    //6 : 두번째 캐비넷이 열린 상태
-    private int progress;
     //환경설정 변수들
     private float volumeEffect;
     private float volumeBGM;
     private float mouseSensitivity;
+    //
+    private int[] insertFuse=new int[3];
     //배경음악 AudioSource를 가지고 있는 오브젝트
     public GameObject charactor;
     public GameObject audioSourceCam;
     public GameObject audioSourcePhone;
+    //머테리얼
+    public Material materialMonitor;
+    public Material materialScreen;
+    //효과음
+    public AudioClip audioClipTurnOnComputer;
 
     private void Awake()
     {
@@ -38,7 +36,6 @@ public class GameManager : MonoBehaviour {
     // Use this for initialization
     void Start () {
         charactorStatus = 0;
-        progress = 0;
 
         if (PlayerPrefs.HasKey("volumeBGM") == false)
         {
@@ -124,13 +121,24 @@ public class GameManager : MonoBehaviour {
         if (audioSourcePhone != null) audioSourcePhone.GetComponent<AudioSource>().volume = volumeEffect;
     }
 
+    public void checkFuse()
+    {
+        GameObject[] monitor;
+        //퓨즈가 맞게 끼워졌을 경우 컴퓨터 켜짐
+        if (insertFuse[0]==2 && insertFuse[1]==3 && insertFuse[2] == 1)
+        {
+            monitor = GameObject.FindGameObjectsWithTag("Monitor");
+            foreach (GameObject m in monitor)
+            {
+                m.GetComponent<MeshRenderer>().material = materialMonitor;
+                playSfx(m.transform.position, audioClipTurnOnComputer);
+            }
+        }
+    }
+
     public int getCharactorStatus()
     {
         return this.charactorStatus;
-    }
-    public int getProgress()
-    {
-        return this.progress;
     }
     public float getVolumeBGM()
     {
@@ -149,10 +157,6 @@ public class GameManager : MonoBehaviour {
     {
         this.charactorStatus = _charactorStatus;
     }
-    public void setProgress(int _progress)
-    {
-        this.progress = _progress;
-    }
     public void setVolumeBGM(float _volumeBGM)
     {
         this.volumeBGM = _volumeBGM;
@@ -164,5 +168,9 @@ public class GameManager : MonoBehaviour {
     public void setMouseSensitivity(float _mouseSensitivity)
     {
         this.mouseSensitivity = _mouseSensitivity;
+    }
+    public void setInsertFuse(int index, int color)
+    {
+        this.insertFuse[index] = color;
     }
 }

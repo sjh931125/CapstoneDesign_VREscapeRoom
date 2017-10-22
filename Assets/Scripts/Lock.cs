@@ -11,11 +11,16 @@ public class Lock : MonoBehaviour {
     public GameObject[] downImg = new GameObject[4];
     public GameObject[] numBG = new GameObject[4];
     public GameObject[] numText = new GameObject[4];
+    //효과음
+    public AudioClip audioClipLockedDoor;
+
+    private GameObject selectedCabinet;
     private int numPosition;
     private int[,] answerCab = { {3,2,5,0},{7,4,8,5} };
+
 	// Use this for initialization
 	void Start () {
-
+        
 	}
 	
 	// Update is called once per frame
@@ -38,7 +43,7 @@ public class Lock : MonoBehaviour {
             int[] inputValue = new int[4];
             for (int i = 0; i < 4; i++) inputValue[i] = int.Parse(numText[i].GetComponent<Text>().text);
 
-            if (GameManager.instance.getProgress() == 3)
+            if (selectedCabinet.GetComponent<ClassForAnimation>().objAnimator.name.Equals("Cabinet1"))
             {
                 for(int i = 0; i < 4; i++)
                 {
@@ -49,7 +54,7 @@ public class Lock : MonoBehaviour {
                     }
                 }
             }
-            else if (GameManager.instance.getProgress() == 5)
+            else if (selectedCabinet.GetComponent<ClassForAnimation>().objAnimator.name.Equals("Cabinet2"))
             {
                 for (int i = 0; i < 4; i++)
                 {
@@ -60,14 +65,21 @@ public class Lock : MonoBehaviour {
                     }
                 }
             }
-
+            //자물쇠 여는데 성공할 경우
             if (check == true)
             {
-                //문열기 성공
+                selectedCabinet.GetComponent<ClassForAnimation>().playAnimation();
+                foreach (GameObject obj in selectedCabinet.GetComponent<ClassForAnimation>().objAdditional)
+                {
+                    obj.tag = "Door";
+                }
+                displayOnOff(false);
+                GameManager.instance.setCharactorStatus(0);
             }
+            //자물쇠 여는데 실패할 경우
             else
             {
-                //문열기 실패
+                GameManager.instance.playSfx(selectedCabinet.transform.position, audioClipLockedDoor);
             }
 
         }
@@ -159,5 +171,10 @@ public class Lock : MonoBehaviour {
         upImg[numPosition].GetComponent<Image>().enabled = true;
         downImg[numPosition].GetComponent<Image>().enabled = true;
         numBG[numPosition].GetComponent<RawImage>().color = new Color(1, 1, 0, 200 / 255f);
+    }
+
+    public void setSelectedCabinet(GameObject _selectedCabinet)
+    {
+        this.selectedCabinet = _selectedCabinet;
     }
 }

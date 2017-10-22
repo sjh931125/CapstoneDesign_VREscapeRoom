@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Char.cs" />
     <Compile Include="Assets\Scripts\Charactor.cs" />
+    <Compile Include="Assets\Scripts\ClassForAnimation.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\GenItem.cs" />
     <Compile Include="Assets\Scripts\Lock.cs" />
