@@ -11,17 +11,24 @@ public class Lock : MonoBehaviour {
     public GameObject[] downImg = new GameObject[4];
     public GameObject[] numBG = new GameObject[4];
     public GameObject[] numText = new GameObject[4];
+    private Text[] textNumText = new Text[4];
     //효과음
     public AudioClip audioClipLockedDoor;
     public AudioClip audioClipUsingLock;
 
     private GameObject selectedCabinet;
+    private ClassForAnimation scriptSelectedCabinet;
+    private Transform transformSelectedCabinet;
     private int numPosition;
     private int[,] answerCab = { {3,2,5,0},{7,4,8,5} };
 
 	// Use this for initialization
 	void Start () {
-        
+        //caching
+        for(int i = 0; i < numText.Length; i++)
+        {
+            textNumText[i] = numText[i].GetComponent<Text>();
+        }
 	}
 	
 	// Update is called once per frame
@@ -42,9 +49,8 @@ public class Lock : MonoBehaviour {
         {
             bool check=true;
             int[] inputValue = new int[4];
-            for (int i = 0; i < 4; i++) inputValue[i] = int.Parse(numText[i].GetComponent<Text>().text);
-
-            if (selectedCabinet.GetComponent<ClassForAnimation>().objAnimator.name.Equals("Cabinet1"))
+            for (int i = 0; i < 4; i++) int.TryParse(textNumText[i].text, out inputValue[i]);
+            if (scriptSelectedCabinet.objAnimator.name.Equals("Cabinet1"))
             {
                 for(int i = 0; i < 4; i++)
                 {
@@ -55,7 +61,7 @@ public class Lock : MonoBehaviour {
                     }
                 }
             }
-            else if (selectedCabinet.GetComponent<ClassForAnimation>().objAnimator.name.Equals("Cabinet2"))
+            else if (scriptSelectedCabinet.objAnimator.name.Equals("Cabinet2"))
             {
                 for (int i = 0; i < 4; i++)
                 {
@@ -69,10 +75,10 @@ public class Lock : MonoBehaviour {
             //자물쇠 여는데 성공할 경우
             if (check == true)
             {
-                selectedCabinet.GetComponent<ClassForAnimation>().playAnimation();
-                foreach (GameObject obj in selectedCabinet.GetComponent<ClassForAnimation>().objAdditional)
+                scriptSelectedCabinet.playAnimation();
+                for(int i = 0; i < scriptSelectedCabinet.objAdditional.Length; i++)
                 {
-                    obj.tag = "Door";
+                    scriptSelectedCabinet.objAdditional[i].tag = "Door";
                 }
                 displayOnOff(false);
                 GameManager.instance.setCharactorStatus(0);
@@ -80,7 +86,7 @@ public class Lock : MonoBehaviour {
             //자물쇠 여는데 실패할 경우
             else
             {
-                GameManager.instance.playSfx(selectedCabinet.transform.position, audioClipLockedDoor);
+                GameManager.instance.playSfx(transformSelectedCabinet.position, audioClipLockedDoor);
             }
 
         }
@@ -100,19 +106,19 @@ public class Lock : MonoBehaviour {
         //W가 눌렸을 때, 현재 위치의 숫자를 1 더함
         if (Input.GetKeyDown(KeyCode.W))
         {
-            positionValue = int.Parse(numText[numPosition].GetComponent<Text>().text);
+            int.TryParse(textNumText[numPosition].text, out positionValue);
             positionValue++;
             if (positionValue >= 10) positionValue -= 10;
-            numText[numPosition].GetComponent<Text>().text = positionValue.ToString();
+            textNumText[numPosition].text = positionValue.ToString();
             GameManager.instance.playSfx(GameManager.instance.charactor.transform.position, audioClipUsingLock);
         }
         //S가 눌렸을 때, 현재 위치의 숫자를 1 뺌
         if (Input.GetKeyDown(KeyCode.S))
         {
-            positionValue = int.Parse(numText[numPosition].GetComponent<Text>().text);
+            int.TryParse(textNumText[numPosition].text, out positionValue);
             positionValue--;
             if (positionValue < 0) positionValue += 10;
-            numText[numPosition].GetComponent<Text>().text = positionValue.ToString();
+            textNumText[numPosition].text = positionValue.ToString();
             GameManager.instance.playSfx(GameManager.instance.charactor.transform.position, audioClipUsingLock);
         }
         //A가 눌렸을 때, 왼쪽으로 한칸 이동
@@ -179,5 +185,7 @@ public class Lock : MonoBehaviour {
     public void setSelectedCabinet(GameObject _selectedCabinet)
     {
         this.selectedCabinet = _selectedCabinet;
+        this.scriptSelectedCabinet = _selectedCabinet.GetComponent<ClassForAnimation>();
+        this.transformSelectedCabinet = _selectedCabinet.GetComponent<Transform>();
     }
 }

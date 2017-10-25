@@ -12,11 +12,13 @@ public class MainSettings : MonoBehaviour {
     public GameObject settingsUI;
     public GameObject keyUI;
     public GameObject creditUI;
-    public GameObject[] menuText = new GameObject[5];
+    public GameObject loadingUI;
+    public GameObject[] menuText = new GameObject[4];
     public GameObject[] settingsText = new GameObject[4];
     public GameObject[] settingsSlider = new GameObject[3];
     private int menuPosition;
     private int[] textPosition = new int[2];
+    
     //환경설정 변수들
     private float volumeBGM;
     private float volumeEffect;
@@ -25,13 +27,12 @@ public class MainSettings : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        
     }
 
     //초기화 메소드
@@ -118,10 +119,6 @@ public class MainSettings : MonoBehaviour {
                 }
                 else if (textPosition[0] == 3)
                 {
-                    //처음 화면으로
-                }
-                else if (textPosition[0] == 4)
-                {
                     returnToGame();
                 }
             }
@@ -155,7 +152,7 @@ public class MainSettings : MonoBehaviour {
     //키보드가 눌렸을 때 실행될 메소드
     public void keyboardPushed()
     {
-        //W가 눌렸을 때, 현재 위치의 숫자를 1 더함
+        //W가 눌렸을 때, 현재 위치의 숫자를 1 뺌
         if (Input.GetKeyDown(KeyCode.W))
         {
             if (menuPosition == 0 || menuPosition == 1)
@@ -168,12 +165,12 @@ public class MainSettings : MonoBehaviour {
             }
 
         }
-        //S가 눌렸을 때, 현재 위치의 숫자를 1 뺌
+        //S가 눌렸을 때, 현재 위치의 숫자를 1 더함
         if (Input.GetKeyDown(KeyCode.S))
         {
             if (menuPosition == 0)
             {
-                if (textPosition[menuPosition] < 4)
+                if (textPosition[menuPosition] < 3)
                 {
                     textPosition[menuPosition]++;
                     movePosition();
@@ -264,7 +261,7 @@ public class MainSettings : MonoBehaviour {
             textPosition[0] = 0;
             menuText[0].GetComponent<Text>().fontSize = 60;
             menuText[0].GetComponent<Text>().color = new Color(155 / 255f, 155 / 255f, 0);
-            for (int i = 1; i < 5; i++)
+            for (int i = 1; i < 4; i++)
             {
                 menuText[i].GetComponent<Text>().fontSize = 50;
                 menuText[i].GetComponent<Text>().color = new Color(158 / 255f, 158 / 255f, 158 / 255f);
@@ -332,7 +329,7 @@ public class MainSettings : MonoBehaviour {
     {
         if (menuPosition == 0)
         {
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 4; i++)
             {
                 if (textPosition[menuPosition] == i) continue;
                 menuText[i].GetComponent<Text>().fontSize = 50;

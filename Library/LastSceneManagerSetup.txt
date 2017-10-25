@@ -1,7 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/ClassRoomLogic.unity
+- path: Assets/Scenes/Main.unity
   isLoaded: 1
   isActive: 1
-- path: Assets/Scenes/ClassRoom.unity
-  isLoaded: 1
-  isActive: 0

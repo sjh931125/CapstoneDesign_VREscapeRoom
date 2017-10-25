@@ -32,20 +32,22 @@ public class Charactor : MonoBehaviour {
     //테스트용 오브젝트
     public GameObject testHead;
 
+    //cache용 변수들
+    private Transform transformCharHand;
+    private Transform transformThis;
+
     // Use this for initialization
     void Start () {
+        //caching
+        transformCharHand = charHand.GetComponent<Transform>();
+        transformThis = this.GetComponent<Transform>();
+        //initializing
         moveSpeed = 1.0f;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        //캐릭터의 상태가 기본상태일 경우
-        if (GameManager.instance.getCharactorStatus() == 0)
-        {
-            //charMove();
-            //mouseClicked();
-            //keyboardPushed();
-        }
+        
 	}
 
     //캐릭터 이동에 관련한 메소드
@@ -60,10 +62,10 @@ public class Charactor : MonoBehaviour {
 
         //캐릭터의 이동
         Vector3 moveDirection = (Vector3.forward * moveVertical) + (Vector3.right * moveHorizontal);
-        this.transform.Translate(moveDirection.normalized * Time.deltaTime * moveSpeed, Space.Self);
+        transformThis.Translate(moveDirection.normalized * Time.deltaTime * moveSpeed, Space.Self);
 
         //캐릭터의 회전
-        this.transform.Rotate(Vector3.up * GameManager.instance.getMouseSensitivity() * Time.deltaTime * moveMouse);
+        transformThis.Rotate(Vector3.up * GameManager.instance.getMouseSensitivity() * Time.deltaTime * moveMouse);
         
         //테스트용 코드
         testHead.transform.Rotate(Vector3.left*GameManager.instance.getMouseSensitivity()*Time.deltaTime*testMoveMouseY);
@@ -85,10 +87,10 @@ public class Charactor : MonoBehaviour {
                 //레이캐스트에 부딪힌 물체를 gameObject로 변환하여 변수에 저장
                 GameObject item = hit.transform.GetComponent<Rigidbody>().gameObject;
                 //레이캐스트에 부딪힌 물체와 캐릭터간의 거리를 구하여 변수에 저장
-                float dist = Vector3.Distance(this.transform.position, hit.transform.position);
+                float dist = Vector3.Distance(transformThis.position, hit.transform.position);
 
                 //물건을 들고있을 때 들고있는 물건이 RC인 경우
-                if (item.tag.Equals("Projector") && charHand.transform.childCount != 0)
+                if (item.tag.Equals("Projector") && transformCharHand.childCount != 0)
                 {
                     //charHand의 자식 오브젝트를 불러옴
                     GameObject child_item = charHand.GetComponentInChildren<Rigidbody>().gameObject;
@@ -102,18 +104,10 @@ public class Charactor : MonoBehaviour {
                     }
                 }
 
-                if (dist <= 1.5f)
+                else if (dist <= 1.5f)
                 {
-                    //태그가 Smartphone일 경우 charLight를 활성화시킴
-                    if (item.tag.Equals("Smartphone"))
-                    {
-                        charLight.GetComponent<Light>().enabled = true;
-                        Destroy(item);
-                        //물건 집을 때의 소리 재생
-                        GameManager.instance.playSfx(item.transform.position, audioClipPickItem);
-                    }
                     //태그가 Item이고 물건을 가지고 있지 않을때, 물건을 집는다
-                    if (item.tag.Equals("Item") && (charHand.transform.childCount == 0))
+                    if (item.tag.Equals("Item") && (transformCharHand.childCount == 0))
                     {
                         if (GameManager.instance.getFuseSolved() == true)
                         {
@@ -123,7 +117,7 @@ public class Charactor : MonoBehaviour {
                             }
                         }
                         //item을 charHand의 자식 오브젝트로 만든다
-                        item.transform.SetParent(charHand.transform);
+                        item.transform.SetParent(transformCharHand);
 
                         //item의 위치값과 회전값을 초기화시킨다.
                         item.transform.localPosition = Vector3.zero;
@@ -140,19 +134,18 @@ public class Charactor : MonoBehaviour {
 
                     }
                     //태그가 Door일 경우
-                    if (item.tag.Equals("Door"))
+                    else if (item.tag.Equals("Door"))
                     {
                         item.GetComponent<ClassForAnimation>().playAnimation();
                     }
                     //태그가 ElecDoor일 경우
-                    if (item.tag.Equals("ElecDoor"))
+                    else if (item.tag.Equals("ElecDoor"))
                     {
                         //현재 물건을 들고있을 경우
-                        if (charHand.transform.childCount != 0)
+                        if (transformCharHand.childCount != 0)
                         {
                             //charHand의 자식 오브젝트를 불러옴
                             GameObject child_item = charHand.GetComponentInChildren<Rigidbody>().gameObject;
-                            Debug.Log(child_item.name);
                             //들고있는 아이템이 ElecKey일 경우
                             if (child_item.name.Equals("ElecKey"))
                             {
@@ -175,10 +168,10 @@ public class Charactor : MonoBehaviour {
                         }
                     }
                     //태그가 FuseHome일 경우
-                    if (item.tag.Equals("FuseHome"))
+                    else if (item.tag.Equals("FuseHome"))
                     {
                         //현재 물건을 들고있을 경우
-                        if (charHand.transform.childCount != 0)
+                        if (transformCharHand.childCount != 0)
                         {
                             //charHand의 자식 오브젝트를 불러옴
                             GameObject child_item = charHand.GetComponentInChildren<Rigidbody>().gameObject;
@@ -208,8 +201,16 @@ public class Charactor : MonoBehaviour {
                             }
                         }
                     }
+                    //태그가 Smartphone일 경우 charLight를 활성화시킴
+                    if (item.tag.Equals("Smartphone"))
+                    {
+                        charLight.GetComponent<Light>().enabled = true;
+                        Destroy(item);
+                        //물건 집을 때의 소리 재생
+                        GameManager.instance.playSfx(item.transform.position, audioClipPickItem);
+                    }
                     //태그가 CabDoor일 경우
-                    if (item.tag.Equals("CabDoor"))
+                    else if (item.tag.Equals("CabDoor"))
                     {
                         GameManager.instance.GetComponent<Lock>().setSelectedCabinet(item);
                         GameManager.instance.setCharactorStatus(1);
@@ -217,10 +218,10 @@ public class Charactor : MonoBehaviour {
                         GameManager.instance.playSfx(item.transform.position, audioClipLockedCabinet);
                     }
                     //태그가 Security일 경우
-                    if (item.tag.Equals("Security"))
+                    else if (item.tag.Equals("Security"))
                     {
                         //현재 물건을 들고있을 경우
-                        if (charHand.transform.childCount != 0)
+                        if (transformCharHand.childCount != 0)
                         {
                             //charHand의 자식 오브젝트를 불러옴
                             GameObject child_item = charHand.GetComponentInChildren<Rigidbody>().gameObject;
@@ -236,7 +237,7 @@ public class Charactor : MonoBehaviour {
                         }
                     }
                     //태그가 LastDoor일 경우
-                    if (item.tag.Equals("LastDoor"))
+                    else if (item.tag.Equals("LastDoor"))
                     {
                         if (GameManager.instance.getSecurityOpened() == true)
                         {
@@ -260,7 +261,7 @@ public class Charactor : MonoBehaviour {
         if (Input.GetMouseButtonDown(1))
         {
             //물건을 집고있는 상태일 경우, 물건을 바닥에 버린다.
-            if (charHand.transform.childCount != 0)
+            if (transformCharHand.childCount != 0)
             {
                 //charHand의 자식 오브젝트를 불러옴
                 GameObject child_item = charHand.GetComponentInChildren<Rigidbody>().gameObject;
@@ -268,13 +269,13 @@ public class Charactor : MonoBehaviour {
                 setPhyComponents(child_item, false);
 
                 //item을 charHand의 자식에서 제거한다
-                charHand.transform.DetachChildren();
+                transformCharHand.DetachChildren();
 
                 //띄우고 있던 이미지 숨기기
                 itemImg.GetComponent<Image>().enabled = false;
 
                 //물건 버릴 때의 소리 재생
-                GameManager.instance.playSfx(charHand.transform.position, audioClipThrowItem);
+                GameManager.instance.playSfx(transformCharHand.position, audioClipThrowItem);
             }
         }
     }
@@ -286,9 +287,9 @@ public class Charactor : MonoBehaviour {
         Rigidbody itemRigidbody = item.GetComponent<Rigidbody>();
         MeshRenderer itemMeshRend = item.GetComponent<MeshRenderer>();
 
-        foreach (Collider itemCollider in itemColliders)
+        for(int i = 0; i < itemColliders.Length; i++)
         {
-            itemCollider.enabled = !isSet;
+            itemColliders[i].enabled = !isSet;
         }
         itemRigidbody.isKinematic = isSet;
         itemMeshRend.enabled = !isSet;

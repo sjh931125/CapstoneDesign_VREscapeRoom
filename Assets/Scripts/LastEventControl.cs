@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class LastEventControl : MonoBehaviour {
     //삭제할 오브젝트
@@ -98,6 +99,7 @@ public class LastEventControl : MonoBehaviour {
 
     public void onGoingEvent()
     {
+        int tmp;
         if (frameStack == 2 && stringStack == 1)
         {
             objString.GetComponent<Image>().sprite = Resources.Load<Sprite>("Items/StringDontgo");
@@ -109,7 +111,8 @@ public class LastEventControl : MonoBehaviour {
 
         if (frameStack == 1 && stringStack == 1)
         {
-            foreach (GameObject obj in objDestroy) Destroy(obj);
+            tmp = objDestroy.Length;
+            for (int i = 0; i < tmp; i++) Destroy(objDestroy[i]);
             objFrame[0].GetComponent<Canvas>().enabled = true;
         }
         if (frameStack == 2 && stringStack == 2)
@@ -225,7 +228,9 @@ public class LastEventControl : MonoBehaviour {
         }
         if (timer > 19)
         {
-            //메인 화면으로
+            SceneManager.LoadScene("Main");
+            SceneManager.UnloadSceneAsync("ClassRoomLogic");
+            SceneManager.UnloadSceneAsync("ClassRoom");
         }
     }
 }

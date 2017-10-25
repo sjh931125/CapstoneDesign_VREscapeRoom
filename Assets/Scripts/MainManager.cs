@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MainManager : MonoBehaviour {
 
@@ -17,7 +18,7 @@ public class MainManager : MonoBehaviour {
     //배경음악 AudioSource를 가지고 있는 오브젝트
     public GameObject charactor;
     public GameObject audioSourceCam;
-    //
+    //게임 화면 text 오브젝트
     public GameObject textTitle;
     public GameObject textStart;
     public GameObject textSettings;
@@ -27,6 +28,9 @@ public class MainManager : MonoBehaviour {
     float moveMouse;
     float testMoveMouseY;//테스트용 변수
 
+    //cache용 변수
+    private MainSettings scriptMainSettings;
+
     private void Awake()
     {
         instance = this;
@@ -35,6 +39,9 @@ public class MainManager : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
+        //caching
+        scriptMainSettings = this.GetComponent<MainSettings>();
+
         charactorStatus = 0;
 
         if (PlayerPrefs.HasKey("volumeBGM") == false)
@@ -76,8 +83,8 @@ public class MainManager : MonoBehaviour {
         }
         else if (charactorStatus == 1)
         {
-            this.GetComponent<MainSettings>().mouseClicked();
-            this.GetComponent<MainSettings>().keyboardPushed();
+            scriptMainSettings.mouseClicked();
+            scriptMainSettings.keyboardPushed();
         }
     }
 
@@ -103,13 +110,15 @@ public class MainManager : MonoBehaviour {
                 GameObject item = hit.transform.GetComponent<Rigidbody>().gameObject;
                 if (item.name.Equals("Start"))
                 {
-                    Application.LoadLevel("ClassRoomLogic");
-                    Application.LoadLevelAdditive("ClassRoom");
+                    scriptMainSettings.loadingUI.GetComponent<Canvas>().enabled = true;
+                    SceneManager.LoadScene("ClassRoomLogic");
+                    SceneManager.LoadScene("ClassRoom", LoadSceneMode.Additive);
+                    SceneManager.UnloadSceneAsync("Main");
                 }
                 else if(item.name.Equals("Settings")){
                     mainOnOff(false);
-                    MainManager.instance.setCharactorStatus(1);
-                    MainManager.instance.GetComponent<MainSettings>().initialization();
+                    this.setCharactorStatus(1);
+                    scriptMainSettings.initialization();
                 }
                 else if (item.name.Equals("Exit"))
                 {

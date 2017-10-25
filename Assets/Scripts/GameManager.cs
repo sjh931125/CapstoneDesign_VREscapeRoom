@@ -30,6 +30,10 @@ public class GameManager : MonoBehaviour {
     public Material materialSecurity;
     //효과음
     public AudioClip audioClipTurnOnComputer;
+    //cache용 변수
+    private Charactor scriptCharactor;
+    private Lock scriptLock;
+    private Settings scriptSettings;
 
     private void Awake()
     {
@@ -38,6 +42,11 @@ public class GameManager : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        //caching
+        scriptCharactor = charactor.GetComponent<Charactor>();
+        scriptLock = this.GetComponent<Lock>();
+        scriptSettings = this.GetComponent<Settings>();
+
         charactorStatus = 0;
         fuseSolved = false;
         securityOpened = false;
@@ -78,25 +87,25 @@ public class GameManager : MonoBehaviour {
     {
         if (charactorStatus == 0)
         {
-            charactor.GetComponent<Charactor>().mouseClicked();
-            charactor.GetComponent<Charactor>().keyboardPushed();
-            charactor.GetComponent<Charactor>().controlWalkingSound();
+            scriptCharactor.mouseClicked();
+            scriptCharactor.keyboardPushed();
+            scriptCharactor.controlWalkingSound();
         }
         else if (charactorStatus == 1)
         {
-            this.GetComponent<Lock>().mouseClicked();
-            this.GetComponent<Lock>().keyboardPushed();
+            scriptLock.mouseClicked();
+            scriptLock.keyboardPushed();
         }
         else if (charactorStatus == 2)
         {
-            this.GetComponent<Settings>().mouseClicked();
-            this.GetComponent<Settings>().keyboardPushed();
+            scriptSettings.mouseClicked();
+            scriptSettings.keyboardPushed();
         }
     }
     void FixedUpdate () {
         if (charactorStatus == 0)
         {
-            charactor.GetComponent<Charactor>().charMove();
+            scriptCharactor.charMove();
         }
 	}
 
@@ -133,10 +142,10 @@ public class GameManager : MonoBehaviour {
         if (fuseSolved==false && insertFuse[0]==2 && insertFuse[1]==3 && insertFuse[2] == 1)
         {
             monitor = GameObject.FindGameObjectsWithTag("Monitor");
-            foreach (GameObject m in monitor)
+            for(int i = 0; i < monitor.Length; i++)
             {
-                m.GetComponent<MeshRenderer>().material = materialMonitor;
-                playSfx(m.transform.position, audioClipTurnOnComputer);
+                monitor[i].GetComponent<MeshRenderer>().material = materialMonitor;
+                playSfx(monitor[i].transform.position, audioClipTurnOnComputer);
                 fuseSolved = true;
             }
         }

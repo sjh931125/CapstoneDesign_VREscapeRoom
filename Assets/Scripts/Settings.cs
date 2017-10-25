@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Settings : MonoBehaviour {
     //UI캔버스 오브젝트
@@ -16,22 +17,31 @@ public class Settings : MonoBehaviour {
     public GameObject[] settingsSlider = new GameObject[3];
     private int menuPosition;
     private int[] textPosition = new int[2];
+
     //환경설정 변수들
     private float volumeBGM;
     private float volumeEffect;
     private float mouseSensitivity;
-	// Use this for initialization
-	void Start () {
-		
+
+    //cache용 변수
+    private Text[] textMenuText = new Text[5];
+    private Text[] textSettingsText = new Text[4];
+    // Use this for initialization
+    void Start () {
+		//caching
+        for(int i = 0; i < menuText.Length; i++)
+        {
+            textMenuText[i] = menuText[i].GetComponent<Text>();
+        }
+        for(int i = 0; i < settingsText.Length; i++)
+        {
+            textSettingsText[i] = settingsText[i].GetComponent<Text>();
+        }
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        if (GameManager.instance.getCharactorStatus() == 2)
-        {
-            //mouseClicked();
-            //keyboardPushed();
-        }
+
 	}
 
     //초기화 메소드
@@ -117,7 +127,9 @@ public class Settings : MonoBehaviour {
                 }
                 else if (textPosition[0] == 3)
                 {
-                    //처음 화면으로
+                    SceneManager.LoadScene("Main");
+                    SceneManager.UnloadSceneAsync("ClassRoomLogic");
+                    SceneManager.UnloadSceneAsync("ClassRoom");
                 }
                 else if (textPosition[0] == 4)
                 {
@@ -261,12 +273,12 @@ public class Settings : MonoBehaviour {
         {
             menuPosition = 0;
             textPosition[0] = 0;
-            menuText[0].GetComponent<Text>().fontSize = 60;
-            menuText[0].GetComponent<Text>().color = new Color(155 / 255f, 155 / 255f, 0);
+            textMenuText[0].fontSize = 60;
+            textMenuText[0].color = new Color(155 / 255f, 155 / 255f, 0);
             for (int i = 1; i < 5; i++)
             {
-                menuText[i].GetComponent<Text>().fontSize = 50;
-                menuText[i].GetComponent<Text>().color = new Color(158 / 255f, 158 / 255f, 158 / 255f);
+                textMenuText[i].fontSize = 50;
+                textMenuText[i].color = new Color(158 / 255f, 158 / 255f, 158 / 255f);
             }
             settingsOnOff(false);
             keyOnOff(false);
@@ -282,12 +294,12 @@ public class Settings : MonoBehaviour {
         {
             menuPosition = 1;
             textPosition[1] = 0;
-            settingsText[0].GetComponent<Text>().fontSize = 60;
-            settingsText[0].GetComponent<Text>().color = new Color(155 / 255f, 155 / 255f, 0);
+            textSettingsText[0].fontSize = 60;
+            textSettingsText[0].color = new Color(155 / 255f, 155 / 255f, 0);
             for (int i = 1; i < 4; i++)
             {
-                settingsText[i].GetComponent<Text>().fontSize = 50;
-                settingsText[i].GetComponent<Text>().color = new Color(158 / 255f, 158 / 255f, 158 / 255f);
+                textSettingsText[i].fontSize = 50;
+                textSettingsText[i].color = new Color(158 / 255f, 158 / 255f, 158 / 255f);
             }
             settingsSlider[0].GetComponent<Slider>().value = volumeBGM;
             settingsSlider[1].GetComponent<Slider>().value = volumeEffect;
@@ -334,22 +346,22 @@ public class Settings : MonoBehaviour {
             for (int i = 0; i < 5; i++)
             {
                 if (textPosition[menuPosition] == i) continue;
-                menuText[i].GetComponent<Text>().fontSize = 50;
-                menuText[i].GetComponent<Text>().color = new Color(158 / 255f, 158 / 255f, 158 / 255f);
+                textMenuText[i].fontSize = 50;
+                textMenuText[i].color = new Color(158 / 255f, 158 / 255f, 158 / 255f);
             }
-            menuText[textPosition[menuPosition]].GetComponent<Text>().fontSize = 60;
-            menuText[textPosition[menuPosition]].GetComponent<Text>().color = new Color(155 / 255f, 155 / 255f, 0);
+            textMenuText[textPosition[menuPosition]].fontSize = 60;
+            textMenuText[textPosition[menuPosition]].color = new Color(155 / 255f, 155 / 255f, 0);
         }
         else if (menuPosition == 1)
         {
             for (int i = 0; i < 4; i++)
             {
                 if (textPosition[menuPosition] == i) continue;
-                settingsText[i].GetComponent<Text>().fontSize = 50;
-                settingsText[i].GetComponent<Text>().color = new Color(158 / 255f, 158 / 255f, 158 / 255f);
+                textSettingsText[i].fontSize = 50;
+                textSettingsText[i].color = new Color(158 / 255f, 158 / 255f, 158 / 255f);
             }
-            settingsText[textPosition[menuPosition]].GetComponent<Text>().fontSize = 60;
-            settingsText[textPosition[menuPosition]].GetComponent<Text>().color = new Color(155 / 255f, 155 / 255f, 0);
+            textSettingsText[textPosition[menuPosition]].fontSize = 60;
+            textSettingsText[textPosition[menuPosition]].color = new Color(155 / 255f, 155 / 255f, 0);
         }
     }
 }
