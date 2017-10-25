@@ -33,6 +33,7 @@ public class ClassForAnimation : MonoBehaviour {
         }
         else
         {
+
             objAnimator.GetComponent<Animator>().SetBool("isOpened", true);
             GameManager.instance.playSfx(this.transform.position, audioClipOpen);
             isOpened = true;

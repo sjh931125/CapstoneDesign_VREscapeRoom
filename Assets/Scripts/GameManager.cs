@@ -16,8 +16,10 @@ public class GameManager : MonoBehaviour {
     private float volumeEffect;
     private float volumeBGM;
     private float mouseSensitivity;
-    //
+    //조건탐지 변수들
     private int[] insertFuse=new int[3];
+    private bool fuseSolved;
+    private bool securityOpened;
     //배경음악 AudioSource를 가지고 있는 오브젝트
     public GameObject charactor;
     public GameObject audioSourceCam;
@@ -25,6 +27,7 @@ public class GameManager : MonoBehaviour {
     //머테리얼
     public Material materialMonitor;
     public Material materialScreen;
+    public Material materialSecurity;
     //효과음
     public AudioClip audioClipTurnOnComputer;
 
@@ -36,6 +39,8 @@ public class GameManager : MonoBehaviour {
     // Use this for initialization
     void Start () {
         charactorStatus = 0;
+        fuseSolved = false;
+        securityOpened = false;
 
         if (PlayerPrefs.HasKey("volumeBGM") == false)
         {
@@ -125,13 +130,14 @@ public class GameManager : MonoBehaviour {
     {
         GameObject[] monitor;
         //퓨즈가 맞게 끼워졌을 경우 컴퓨터 켜짐
-        if (insertFuse[0]==2 && insertFuse[1]==3 && insertFuse[2] == 1)
+        if (fuseSolved==false && insertFuse[0]==2 && insertFuse[1]==3 && insertFuse[2] == 1)
         {
             monitor = GameObject.FindGameObjectsWithTag("Monitor");
             foreach (GameObject m in monitor)
             {
                 m.GetComponent<MeshRenderer>().material = materialMonitor;
                 playSfx(m.transform.position, audioClipTurnOnComputer);
+                fuseSolved = true;
             }
         }
     }
@@ -151,6 +157,14 @@ public class GameManager : MonoBehaviour {
     public float getMouseSensitivity()
     {
         return this.mouseSensitivity;
+    }
+    public bool getSecurityOpened()
+    {
+        return this.securityOpened;
+    }
+    public bool getFuseSolved()
+    {
+        return this.fuseSolved;
     }
 
     public void setCharactorStatus(int _charactorStatus)
@@ -172,5 +186,9 @@ public class GameManager : MonoBehaviour {
     public void setInsertFuse(int index, int color)
     {
         this.insertFuse[index] = color;
+    }
+    public void setSecurityOpened(bool _securityOpened)
+    {
+        this.securityOpened = _securityOpened;
     }
 }

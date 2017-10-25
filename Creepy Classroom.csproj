@@ -83,7 +83,10 @@
     <Compile Include="Assets\Scripts\ClassForAnimation.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\GenItem.cs" />
+    <Compile Include="Assets\Scripts\LastEventControl.cs" />
     <Compile Include="Assets\Scripts\Lock.cs" />
+    <Compile Include="Assets\Scripts\MainManager.cs" />
+    <Compile Include="Assets\Scripts\MainSettings.cs" />
     <Compile Include="Assets\Scripts\Settings.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_GazeTracker.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_LaserPointer.cs" />
@@ -189,6 +192,7 @@
     <Compile Include="Assets\SteamVR\Scripts\SteamVR_Utils.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Models\Izzy\Document\readme.txt" />
     <None Include="Assets\Models\Smartphone\StandardColorMask.shader" />
     <None Include="Assets\SteamVR\InteractionSystem\Core\Shaders\SeeThru.shader" />
     <None Include="Assets\SteamVR\InteractionSystem\Core\Shaders\Silhouette.shader" />

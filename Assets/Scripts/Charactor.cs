@@ -4,11 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Charactor : MonoBehaviour {
-    //캐릭터의 손 오브젝트를 받을 변수
+    //캐릭터의 손 오브젝트
     public GameObject charHand;
-    //캐릭터가 비추는 불빛을 나타낼 오브젝트를 담을 변수
+    //캐릭터가 비추는 불빛을 나타낼 오브젝트
     public GameObject charLight;
-    //UI창에 현재 아이템을 보여줄 UI 변수
+    //UI창에 현재 아이템을 보여줄 UI 오브젝트
     public GameObject itemImg;
     
     //방향키, 마우스 이동 정도를 나타낼 변수
@@ -26,6 +26,8 @@ public class Charactor : MonoBehaviour {
     public AudioClip audioClipLockedCabinet;
     public AudioClip audioClipFuse;
     public AudioClip audioClipTurnOnProjector;
+    public AudioClip audioClipSecurity;
+    public AudioClip audioClipEndingBGM;
 
     //테스트용 오브젝트
     public GameObject testHead;
@@ -113,6 +115,13 @@ public class Charactor : MonoBehaviour {
                     //태그가 Item이고 물건을 가지고 있지 않을때, 물건을 집는다
                     if (item.tag.Equals("Item") && (charHand.transform.childCount == 0))
                     {
+                        if (GameManager.instance.getFuseSolved() == true)
+                        {
+                            if(item.name.Equals("Red") || item.name.Equals("Green") || item.name.Equals("Blue"))
+                            {
+                                return;
+                            }
+                        }
                         //item을 charHand의 자식 오브젝트로 만든다
                         item.transform.SetParent(charHand.transform);
 
@@ -207,8 +216,8 @@ public class Charactor : MonoBehaviour {
                         GameManager.instance.GetComponent<Lock>().displayOnOff(true);
                         GameManager.instance.playSfx(item.transform.position, audioClipLockedCabinet);
                     }
-                    //태그가 LastDoor일 경우
-                    if (item.tag.Equals("LastDoor"))
+                    //태그가 Security일 경우
+                    if (item.tag.Equals("Security"))
                     {
                         //현재 물건을 들고있을 경우
                         if (charHand.transform.childCount != 0)
@@ -217,8 +226,30 @@ public class Charactor : MonoBehaviour {
                             GameObject child_item = charHand.GetComponentInChildren<Rigidbody>().gameObject;
                             if (child_item.name.Equals("LastKey"))
                             {
-                                //마지막 문을 여는 이벤트
+                                item.GetComponent<MeshRenderer>().material=GameManager.instance.materialSecurity;
+                                GameManager.instance.playSfx(item.transform.position, audioClipSecurity);
+                                GameManager.instance.setSecurityOpened(true);
+                                Destroy(child_item);
+                                //띄우고 있던 이미지 숨기기
+                                itemImg.GetComponent<Image>().enabled = false;
                             }
+                        }
+                    }
+                    //태그가 LastDoor일 경우
+                    if (item.tag.Equals("LastDoor"))
+                    {
+                        if (GameManager.instance.getSecurityOpened() == true)
+                        {
+                            item.GetComponent<ClassForAnimation>().playAnimation();
+                            item.GetComponent<Collider>().enabled = false;
+                            GameManager.instance.audioSourceCam.GetComponent<AudioSource>().clip = audioClipEndingBGM;
+                            GameManager.instance.audioSourceCam.GetComponent<AudioSource>().Play();
+                            GameManager.instance.GetComponent<LastEventControl>().startEvent(item.GetComponent<ClassForAnimation>().objAdditional);
+                            GameManager.instance.GetComponent<Lock>().defaultUI.GetComponent<Canvas>().enabled = false;
+                        }
+                        else
+                        {
+                            GameManager.instance.playSfx(item.transform.position, audioClipLockedCabinet);
                         }
                     }
                 }

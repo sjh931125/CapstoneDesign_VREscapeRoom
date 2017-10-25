@@ -13,6 +13,7 @@ public class Lock : MonoBehaviour {
     public GameObject[] numText = new GameObject[4];
     //효과음
     public AudioClip audioClipLockedDoor;
+    public AudioClip audioClipUsingLock;
 
     private GameObject selectedCabinet;
     private int numPosition;
@@ -103,6 +104,7 @@ public class Lock : MonoBehaviour {
             positionValue++;
             if (positionValue >= 10) positionValue -= 10;
             numText[numPosition].GetComponent<Text>().text = positionValue.ToString();
+            GameManager.instance.playSfx(GameManager.instance.charactor.transform.position, audioClipUsingLock);
         }
         //S가 눌렸을 때, 현재 위치의 숫자를 1 뺌
         if (Input.GetKeyDown(KeyCode.S))
@@ -111,6 +113,7 @@ public class Lock : MonoBehaviour {
             positionValue--;
             if (positionValue < 0) positionValue += 10;
             numText[numPosition].GetComponent<Text>().text = positionValue.ToString();
+            GameManager.instance.playSfx(GameManager.instance.charactor.transform.position, audioClipUsingLock);
         }
         //A가 눌렸을 때, 왼쪽으로 한칸 이동
         if (Input.GetKeyDown(KeyCode.A))
