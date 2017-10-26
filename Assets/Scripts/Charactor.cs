@@ -10,6 +10,12 @@ public class Charactor : MonoBehaviour {
     public GameObject charLight;
     //UI창에 현재 아이템을 보여줄 UI 오브젝트
     public GameObject itemImg;
+    //카메라를 담고있는 오브젝트
+    public GameObject objCamera;
+    //몸통을 나타내는 오브젝트
+    public GameObject objBody;
+    //머리를 나타내는 오브젝트
+    public GameObject objHead;
     
     //방향키, 마우스 이동 정도를 나타낼 변수
     float moveHorizontal;
@@ -30,17 +36,23 @@ public class Charactor : MonoBehaviour {
     public AudioClip audioClipEndingBGM;
 
     //테스트용 오브젝트
-    public GameObject testHead;
+    //public GameObject testHead;
 
     //cache용 변수들
     private Transform transformCharHand;
     private Transform transformThis;
+    private Transform transformCamera;
+    private Transform transformBody;
+    private Transform transformHead;
 
     // Use this for initialization
     void Start () {
         //caching
         transformCharHand = charHand.GetComponent<Transform>();
         transformThis = this.GetComponent<Transform>();
+        transformCamera = objCamera.GetComponent<Transform>();
+        transformBody = objBody.GetComponent<Transform>();
+        transformHead = objHead.GetComponent<Transform>();
         //initializing
         moveSpeed = 1.0f;
 	}
@@ -57,18 +69,20 @@ public class Charactor : MonoBehaviour {
         moveHorizontal = Input.GetAxis("Horizontal");
         moveVertical = Input.GetAxis("Vertical");
         moveMouse = Input.GetAxis("Mouse X");
-        testMoveMouseY = Input.GetAxis("Mouse Y");//테스트용 변수
+        //testMoveMouseY = Input.GetAxis("Mouse Y");//테스트용 변수
         
 
         //캐릭터의 이동
         Vector3 moveDirection = (Vector3.forward * moveVertical) + (Vector3.right * moveHorizontal);
-        transformThis.Translate(moveDirection.normalized * Time.deltaTime * moveSpeed, Space.Self);
+        transformBody.Translate(moveDirection.normalized * Time.deltaTime * moveSpeed, Space.Self);
+        transformHead.position = new Vector3(transformBody.position.x,transformHead.position.y,transformBody.position.z);
 
         //캐릭터의 회전
-        transformThis.Rotate(Vector3.up * GameManager.instance.getMouseSensitivity() * Time.deltaTime * moveMouse);
+        transformCamera.Rotate(Vector3.up * GameManager.instance.getMouseSensitivity() * Time.deltaTime * moveMouse);
+        transformBody.eulerAngles = new Vector3(transformBody.eulerAngles.x,transformCamera.eulerAngles.y,transformBody.eulerAngles.z);
         
         //테스트용 코드
-        testHead.transform.Rotate(Vector3.left*GameManager.instance.getMouseSensitivity()*Time.deltaTime*testMoveMouseY);
+        //testHead.transform.Rotate(Vector3.left*GameManager.instance.getMouseSensitivity()*Time.deltaTime*testMoveMouseY);
     }
 
     //마우스가 눌렸을 때 실행될 메소드

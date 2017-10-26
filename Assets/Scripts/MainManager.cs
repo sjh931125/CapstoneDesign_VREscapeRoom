@@ -25,8 +25,9 @@ public class MainManager : MonoBehaviour {
     public GameObject textExit;
 
     public GameObject testHead;
-    float moveMouse;
-    float testMoveMouseY;//테스트용 변수
+    //테스트용 변수
+    //float moveMouse;
+    //float testMoveMouseY;
 
     //cache용 변수
     private MainSettings scriptMainSettings;
@@ -34,6 +35,7 @@ public class MainManager : MonoBehaviour {
     private void Awake()
     {
         instance = this;
+        Screen.fullScreen = true;
     }
 
     // Use this for initialization
@@ -79,7 +81,7 @@ public class MainManager : MonoBehaviour {
         if (charactorStatus == 0)
         {
             mouseClicked();
-            charMove();
+            //charMove();
         }
         else if (charactorStatus == 1)
         {
@@ -164,6 +166,7 @@ public class MainManager : MonoBehaviour {
     }
 
     //캐릭터 이동에 관련한 메소드
+    /*
     public void charMove()
     {
         //방향키, 마우스 이동 정도를 각 변수에 대입
@@ -176,6 +179,7 @@ public class MainManager : MonoBehaviour {
         //테스트용 코드
         testHead.transform.Rotate(Vector3.left * MainManager.instance.getMouseSensitivity() * Time.deltaTime * testMoveMouseY);
     }
+    */
 
     public void mainOnOff(bool isOn)
     {
